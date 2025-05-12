@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.chat.client.controllers.ChatController">
+
+    <left>
+        <VBox spacing="10" style="-fx-background-color: #e0e0e0;" minWidth="200">
+            <Label text="Online Users" styleClass="label-title">
+                <padding>
+                    <Insets top="5.0" right="5.0" bottom="5.0" left="10.0"/>
+                </padding>
+            </Label>
+            <ListView fx:id="userListView" VBox.vgrow="ALWAYS" styleClass="user-list-view"/>
+        </VBox>
+    </left>
+
+    <center>
+        <VBox fx:id="chatContainer" spacing="10">
+            <ListView fx:id="messageListView" VBox.vgrow="ALWAYS" styleClass="list-view"/>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <TextField fx:id="messageField" styleClass="text-field" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="sendButton" text="Send" styleClass="send-button"/>
+                <Button fx:id="sendFileButton" text="Send File" styleClass="file-button"/>
+            </HBox>
+
+            <HBox spacing="10" alignment="CENTER">
+                <Label text="Upload:"/>
+                <ProgressBar fx:id="uploadProgressBar" progress="0" styleClass="progress-bar"/>
+                <Label text="Download:"/>
+                <ProgressBar fx:id="downloadProgressBar" progress="0" styleClass="progress-bar"/>
+            </HBox>
+        </VBox>
+    </center>
+
+    <padding>
+        <Insets top="10.0" right="10.0" bottom="10.0" left="10.0"/>
+    </padding>
+</BorderPane>

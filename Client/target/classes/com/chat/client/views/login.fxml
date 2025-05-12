@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.chat.client.controllers.LoginController"
+      alignment="CENTER" spacing="20" style="-fx-background-color: #f5f5f5;">
+
+    <Label text="Chat Application" style="-fx-font-weight: bold; -fx-font-size: 20px;" />
+
+    <GridPane hgap="10" vgap="10" alignment="CENTER">
+        <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+
+        <Label text="Username:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+        <TextField fx:id="usernameField" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+
+        <Label text="Server Address:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+        <TextField fx:id="serverAddressField" text="localhost" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+    </GridPane>
+
+    <Button fx:id="loginButton" text="Login" onAction="#handleLogin" defaultButton="true" />
+
+    <Label fx:id="errorLabel" style="-fx-text-fill: red;" />
+</VBox>

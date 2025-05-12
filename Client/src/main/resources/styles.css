@@ -1,0 +1,36 @@
+.label-title {
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.sidebar {
+    -fx-background-color: #e0e0e0;
+}
+
+.send-button {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.file-button {
+    -fx-background-color: #6c757d;
+    -fx-text-fill: white;
+}
+
+.progress-bar {
+    -fx-accent: green;
+}
+.text-field {
+    -fx-border-color: transparent transparent black transparent;
+    -fx-border-width: 0 0 2px 0;
+    -fx-padding: 10px;
+}
+
+.user-list-view {
+    -fx-padding: 10px;
+}
+
+.list-view {
+    -fx-padding: 10px;
+}
