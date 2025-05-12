@@ -1,15 +1,17 @@
 package com.chat.client.models;
 
+import javafx.scene.Node;
+
 public class DisplayMessage {
-    private final String content;
+    private final Node content;
     private final boolean isSelf;
 
-    public DisplayMessage(String content, boolean isSelf) {
+    public DisplayMessage(Node content, boolean isSelf) {
         this.content = content;
         this.isSelf = isSelf;
     }
 
-    public String getContent() {
+    public Node getContent() {
         return content;
     }
 

@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -54,7 +55,6 @@ public class ChatController {
     private final ObservableList<User> users = FXCollections.observableArrayList();
     private String username;
     private Stage stage;
-
     private static final double MB_TO_BYTES = 1024.0 * 1024.0;
     private static final String TIME_FORMAT = "HH:mm";
     public boolean initializeConnection(String serverAddress, int port, String username) {
@@ -82,20 +82,27 @@ public class ChatController {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    Label messageLabel = new Label(msg.getContent());
-                    messageLabel.setWrapText(true);
-                    messageLabel.setStyle("-fx-background-color: lightgray; -fx-padding: 8px; -fx-background-radius: 8px; -fx-width: 300px;");
+                    Node contentNode = msg.getContent();
+                    HBox container = new HBox(contentNode);
+                    container.setMaxWidth(500.0);
 
-                    HBox container = new HBox(messageLabel);
                     if (msg.isSelf()) {
-                        container.setAlignment(Pos.CENTER_RIGHT);
-                        messageLabel.setStyle("-fx-background-color: lightblue; -fx-padding: 8px; -fx-background-radius: 8px; -fx-width: 300px;");
+                        container.setAlignment(Pos.BOTTOM_RIGHT);
+                        if (contentNode instanceof Label label) {
+                            label.setStyle("-fx-background-color: lightblue; -fx-padding: 8px; -fx-background-radius: 8px;");
+                            label.setWrapText(true);
+                        }
                     } else {
-                        container.setAlignment(Pos.CENTER_LEFT);
+                        container.setAlignment(Pos.BOTTOM_LEFT);
+                        if (contentNode instanceof Label label) {
+                            label.setStyle("-fx-background-color: lightgray; -fx-padding: 8px; -fx-background-radius: 8px;");
+                            label.setWrapText(true);
+                        }
                     }
 
                     setGraphic(container);
                 }
+
             }
         });
         userListView.setItems(users);
@@ -117,7 +124,7 @@ public class ChatController {
         Platform.runLater(() -> {
             switch (message.getType()) {
                 case TEXT -> handleTextMessage(message);
-                case FILE, AUDIO, VIDEO, NOTE -> handleFileMessage(message);
+                case FILE, AUDIO, VIDEO, NOTE ->notifyFileReceived(message);
             }
         });
     }
@@ -133,11 +140,12 @@ public class ChatController {
     private void displayMessage(ChatMessage message) {
         String timestamp = formatTimestamp(message.getTimestamp());
         String prefix = message.getRecipient() != null ?
-                "[PM from " + message.getSender() + "] " :
-                "[" + message.getSender() + "] ";
+                "\n  from " + message.getSender() + " " :
+                " \n" + message.getSender() + " ";
 
         boolean isSelf = message.getSender().equals(username);
-        messages.add(new DisplayMessage(timestamp + " " + prefix + message.getText(), isSelf));
+        Label label=new Label(message.getText()+"\n"+timestamp + " " + prefix );
+        messages.add(new DisplayMessage(label, isSelf));
 
         scrollToLatestMessage();
     }
@@ -162,21 +170,6 @@ public class ChatController {
         }
     }
 
-
-    private void handleFileMessage(ChatMessage message) {
-        Alert alert = new Alert(
-                Alert.AlertType.CONFIRMATION,
-                "Do you want to save this file?",
-                ButtonType.YES, ButtonType.NO
-        );
-        alert.setTitle("File Received");
-        alert.setHeaderText("You received: " + message.getFilename());
-
-        if (alert.showAndWait().orElse(ButtonType.NO) == ButtonType.YES) {
-            saveReceivedFile(message);
-        }
-    }
-
     private void saveReceivedFile(ChatMessage message) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialFileName(message.getFilename());
@@ -194,16 +187,26 @@ public class ChatController {
     }
 
     private void notifyFileReceived(ChatMessage message) {
-        String displayMsg = String.format("Received %s file: %s (%.2f MB)",
-                message.getType().toString().toLowerCase(),
-                message.getFilename(),
-                message.getFileSize() / MB_TO_BYTES);
+        String type = message.getType().toString().toLowerCase();
+        String fileName = message.getFilename();
+        double size = (message.getFileSize() / MB_TO_BYTES);
+        String fileSize=String.format("%.2f",size);
 
         boolean isSelf = false;
-        messages.add(new DisplayMessage(displayMsg, isSelf));
+
+        Label label = new Label(fileName + " (" + type + ", " + fileSize + " MB)\n");
+
+        Button downloadButton = new Button("Download");
+        downloadButton.setOnAction(e -> saveReceivedFile(message));
+
+        VBox messageBox = new VBox(label, downloadButton);
+        messageBox.setSpacing(5);
+
+        messages.add(new DisplayMessage(messageBox, isSelf));
 
         scrollToLatestMessage();
     }
+
 
     @FXML
     private void handleSendMessage() {
@@ -265,10 +268,10 @@ public class ChatController {
     }
 
     private void notifyFileSent(File file, MessageType type) {
-        String displayMsg = String.format("Sent %s file: %s (%.2f MB)",
+        Label displayMsg = new Label(String.format("Sent %s file: %s (%.2f MB)",
                 type.toString().toLowerCase(),
                 file.getName(),
-                file.length() / MB_TO_BYTES);
+                file.length() / MB_TO_BYTES));
 
         boolean isSelf = true;
         messages.add(new DisplayMessage(displayMsg, isSelf));
