@@ -44,7 +44,7 @@ public class LoginController {
                 Stage stage = (Stage) loginButton.getScene().getWindow();
 
                 Scene chatScene = new Scene(root, 800, 600);
-                chatScene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+                chatScene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
 
                 stage.setScene(chatScene);
                 stage.setTitle("Waliin Chat - " + username);

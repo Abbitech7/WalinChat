@@ -8,14 +8,17 @@
 }
 
 .send-button {
-    -fx-background-color: #007bff;
-    -fx-text-fill: white;
+    -fx-background-color: transparent;
+    -fx-text-fill: blue;
     -fx-font-weight: bold;
+    -fx-cursor: hand;
 }
 
 .file-button {
-    -fx-background-color: #6c757d;
-    -fx-text-fill: white;
+    -fx-background-color: transparent;
+    -fx-text-fill: blue;
+    -fx-cursor: hand;
+    -fx-margin: 10px
 }
 
 .progress-bar {
@@ -25,6 +28,7 @@
     -fx-border-color: transparent transparent black transparent;
     -fx-border-width: 0 0 2px 0;
     -fx-padding: 10px;
+    -fx-background-color: #f4f4f4;
 }
 
 .user-list-view {

@@ -14,6 +14,8 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -38,6 +40,17 @@ public class ChatController {
     @FXML private ProgressBar downloadProgressBar;
     @FXML private VBox chatContainer;
     public void initialize() {
+        Image icon = new Image(getClass().getResource("/assets/send.png").toExternalForm());
+        ImageView imageView = new ImageView(icon);
+        imageView.setFitWidth(20);
+        imageView.setFitHeight(20);
+        sendButton.setGraphic(imageView);
+        Image upload = new Image(getClass().getResource("/assets/files.png").toExternalForm());
+        ImageView imageView1 = new ImageView(upload);
+        imageView1.setFitWidth(20);
+        imageView1.setFitHeight(20);
+        sendFileButton.setGraphic(imageView1);
+
         sendButton.setOnAction(event -> handleSendMessage());
         sendFileButton.setOnAction(event -> handleSendFile());
 
@@ -84,8 +97,6 @@ public class ChatController {
                 } else {
                     Node contentNode = msg.getContent();
                     HBox container = new HBox(contentNode);
-                    container.setMaxWidth(500.0);
-
                     if (msg.isSelf()) {
                         container.setAlignment(Pos.BOTTOM_RIGHT);
                         if (contentNode instanceof Label label) {
@@ -139,10 +150,13 @@ public class ChatController {
 
     private void displayMessage(ChatMessage message) {
         String timestamp = formatTimestamp(message.getTimestamp());
+        String user= message.getSender();
+        if(message.getSender().equals("Server")){
+            user= "";
+        }
         String prefix = message.getRecipient() != null ?
-                "\n  from " + message.getSender() + " " :
-                " \n" + message.getSender() + " ";
-
+                "\n  from " + user + " " :
+                " \n" + user + " ";
         boolean isSelf = message.getSender().equals(username);
         Label label=new Label(message.getText()+"\n"+timestamp + " " + prefix );
         messages.add(new DisplayMessage(label, isSelf));
@@ -165,7 +179,7 @@ public class ChatController {
         users.clear();
         for (String name : userList.split(",")) {
             User user = new User(name);
-            user.setOnline(true); // mark as online
+            user.setOnline(true);
             users.add(user);
         }
     }
@@ -196,7 +210,11 @@ public class ChatController {
 
         Label label = new Label(fileName + " (" + type + ", " + fileSize + " MB)\n");
 
-        Button downloadButton = new Button("Download");
+        Image icon = new Image(getClass().getResource("/assets/download.png").toExternalForm());
+        ImageView iconView = new ImageView(icon);
+        iconView.setFitHeight(16);
+        iconView.setFitWidth(16);
+        Button downloadButton = new Button("Download", iconView);
         downloadButton.setOnAction(e -> saveReceivedFile(message));
 
         VBox messageBox = new VBox(label, downloadButton);
